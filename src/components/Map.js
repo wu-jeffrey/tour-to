@@ -7,7 +7,7 @@ const MapWrapper = ({
   style,
   mapId,
   defaultZoom = 14,
-  defaultCenter = { lat: 43.6532, lng: -79.3832 },
+  defaultCenter = { lat: 43.6532, lng: -79.4132 },
   defaultTilt = 30,
   ...props
 }) => {
