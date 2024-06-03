@@ -15,6 +15,7 @@ const MapWrapper = ({
 
   return (
     <Map
+      data-testid="map"
       style={style}
       defaultZoom={defaultZoom}
       defaultCenter={defaultCenter}
