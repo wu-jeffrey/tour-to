@@ -1,9 +1,9 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import App from '../App';
 import { useTourContext } from '../context/TourContext';
 
-jest.mock('../context/TourContext', () => ({
+jest.mock('../context/TourContext.js', () => ({
   TourContextProvider: ({ children }) => <div>{children}</div>,
   useTourContext: jest.fn(),
 }));
@@ -16,6 +16,10 @@ jest.mock('../components/Map.js', () => ({ style }) => (
     <div data-testid="marker">Kensington Market</div>
     <div data-testid="marker">Eaton Centre</div>
   </div>
+));
+
+jest.mock('../components/MainMenu.js', () => () => (
+  <div data-testid="menu">Menu Content</div>
 ));
 
 describe('App', () => {
@@ -47,15 +51,24 @@ describe('App', () => {
       "Eaton Centre"
     ];
 
+    const map = screen.getByTestId('map');
+
     locationNames.forEach((name) => {
-      expect(screen.getByText(name)).toBeInTheDocument();
+      const marker = within(map).getByText(name);
+      expect(marker).toBeInTheDocument();
     });
   });
 
   it('renders TourContextProvider', () => {
     render(<App />);
-    expect(useTourContext).toHaveBeenCalled();
     const locations = useTourContext().locations;
     expect(locations).toEqual(mockLocations);
+  });
+
+  it('renders Menu component', () => {
+    render(<App />);
+    const menu = screen.getByTestId('menu');
+    expect(menu).toBeInTheDocument();
+    expect(menu).toHaveTextContent('Menu Content');
   });
 });

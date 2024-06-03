@@ -32,7 +32,7 @@ const MainMenu = () => {
     <div>
       <h1 className="text-xl font-bold mb-4">TourTo</h1>
       <h2 className="text-l font-bold mb-4">🌏 Where do you want to visit?</h2>
-      <Checklist options={locationOptions} onChange={handleChecklistChange} />
+      <Checklist key={JSON.stringify(locationOptions)} options={locationOptions} onChange={handleChecklistChange} />
     </div>
   );
 

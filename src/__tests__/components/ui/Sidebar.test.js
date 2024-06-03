@@ -7,23 +7,23 @@ describe('Sidebar Component', () => {
   const expandedContent = <div>Expanded Content</div>;
   const collapsedContent = <div>Collapsed Content</div>;
 
-  test('should render with collapsed state initially', () => {
+  test('should render with expanded state initially', () => {
     render(<Sidebar expandedContent={expandedContent} collapsedContent={collapsedContent} />);
-    
-    expect(screen.getByText('Collapsed Content')).toBeInTheDocument();
+
+    expect(screen.getByText('Expanded Content')).toBeInTheDocument();
     expect(screen.getByRole('button')).toContainHTML('<svg');
-    expect(screen.queryByText('Expanded Content')).not.toBeInTheDocument();
+    expect(screen.queryByText('Collapsed Content')).not.toBeInTheDocument();
   });
 
-  test('should toggle to expanded state on button click', () => {
+  test('should toggle to collapsed state on button click', () => {
     render(<Sidebar expandedContent={expandedContent} collapsedContent={collapsedContent} />);
 
     const toggleButton = screen.getByRole('button');
     fireEvent.click(toggleButton);
 
-    expect(screen.getByText('Expanded Content')).toBeInTheDocument();
+    expect(screen.getByText('Collapsed Content')).toBeInTheDocument();
     expect(screen.getByRole('button')).toContainHTML('<svg');
-    expect(screen.queryByText('Collapsed Content')).not.toBeInTheDocument();
+    expect(screen.queryByText('Expanded Content')).not.toBeInTheDocument();
   });
 
   test('should toggle back to collapsed state on button click again', () => {
@@ -33,7 +33,7 @@ describe('Sidebar Component', () => {
     fireEvent.click(toggleButton);
     fireEvent.click(toggleButton);
 
-    expect(screen.getByText('Collapsed Content')).toBeInTheDocument();
-    expect(screen.queryByText('Expanded Content')).not.toBeInTheDocument();
+    expect(screen.getByText('Expanded Content')).toBeInTheDocument();
+    expect(screen.queryByText('Collapsed Content')).not.toBeInTheDocument();
   });
 });
