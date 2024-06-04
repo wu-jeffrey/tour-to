@@ -3,10 +3,14 @@ import { render, screen } from '@testing-library/react';
 import { TourContextProvider, useTourContext } from '../../context/TourContext';
 
 const TestComponent = () => {
-  const { locations, setLocations } = useTourContext();
+  const {
+    locations, setLocations,
+    currentLocationId, setCurrentLocationId
+  } = useTourContext();
 
   return (
     <div>
+      {currentLocationId && <div data-testid="current-location-id">{currentLocationId.name}</div>}
       <ul>
         {locations.map((location) => (
           <li key={location.name}>{location.name}</li>
@@ -14,6 +18,9 @@ const TestComponent = () => {
       </ul>
       <button onClick={() => setLocations([{ name: 'New Location', lat: 43.7, lng: -79.4, visiting: false }])}>
         Update Locations
+      </button>
+      <button onClick={() => setCurrentLocationId("currentLocationId")}>
+        Update Current Location ID
       </button>
     </div>
   );
@@ -27,6 +34,7 @@ describe('TourContext', () => {
       </TourContextProvider>
     );
 
+    expect(screen.queryByTestId('current-location-id')).not.toBeInTheDocument();
     expect(screen.getByText('245 Queens Quay W')).toBeInTheDocument();
     expect(screen.getByText('CN Tower')).toBeInTheDocument();
     expect(screen.getByText('Nathan Phillips Square')).toBeInTheDocument();
@@ -47,6 +55,20 @@ describe('TourContext', () => {
     });
     expect(screen.queryByText('245 Queens Quay W')).toBeNull();
     expect(screen.getByText('New Location')).toBeInTheDocument();
+  });
+
+  it('allows updating the current location ID', () => {
+    render(
+      <TourContextProvider>
+        <TestComponent />
+      </TourContextProvider>
+    );
+
+    const updateButton = screen.getByText('Update Current Location ID');
+    act(() => {
+      updateButton.click();
+    });
+    expect(screen.getByTestId('current-location-id')).toBeInTheDocument();
   });
 
   it('throws an error if useTourContext is used outside of TourContextProvider', () => {

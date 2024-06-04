@@ -1,5 +1,5 @@
 import React from 'react';
-import { Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
 import { useTourContext } from '../context/TourContext';
 
@@ -11,7 +11,7 @@ const MapWrapper = ({
   defaultTilt = 30,
   ...props
 }) => {
-  const { locations } = useTourContext();
+  const { locations, currentLocationId } = useTourContext();
 
   return (
     <Map
@@ -29,7 +29,14 @@ const MapWrapper = ({
           position={{ lat: location.lat, lng: location.lng }}
           title={location.name}
           onClick={() => console.log(`Clicked on ${location.name}`)}
-        />
+        >
+          <Pin
+            background={'#22ccff'}
+            borderColor={'#1e89a1'}
+            glyphColor={'#0f677a'}
+            scale={location.id === currentLocationId ? 2 : 1}
+          />
+        </AdvancedMarker>
       ))}
     </Map>
   );

@@ -13,6 +13,17 @@ jest.mock('@vis.gl/react-google-maps', () => ({
       {title}
     </div>
   ),
+  Pin: ({ background, borderColor, glyphColor, scale }) => (
+    <div
+      data-testid="pin"
+      style={{
+        background,
+        borderColor,
+        glyphColor,
+        transform: `scale(${scale})`
+      }}
+    />
+  ),
 }));
 
 const mockLocations = [
