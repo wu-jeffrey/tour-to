@@ -5,26 +5,16 @@ import MapWrapper from '../../components/Map';
 
 jest.mock('../../context/TourContext');
 jest.mock('@vis.gl/react-google-maps', () => ({
-  Map: ({ children, defaultZoom, defaultCenter, defaultTilt, mapId, ...props }) => (
+  Map: ({ children, defaultZoom, defaultCenter, defaultTilt, mapId, disableDefaultUI, ...props }) => (
     <div {...props}>{children}</div>
   ),
-  AdvancedMarker: ({ position, title, onClick }) => (
-    <div data-testid="marker" data-title={title} onClick={onClick}>
-      {title}
-    </div>
-  ),
-  Pin: ({ background, borderColor, glyphColor, scale }) => (
-    <div
-      data-testid="pin"
-      style={{
-        background,
-        borderColor,
-        glyphColor,
-        transform: `scale(${scale})`
-      }}
-    />
-  ),
 }));
+
+jest.mock('../../components/MapMarker', () => ({ location }) => (
+  <div data-testid="marker" data-title={location.name}>
+    {location.name}
+  </div>
+));
 
 const mockLocations = [
   { name: 'Location 1', visiting: true, lat: 43.6532, lng: -79.3832 },
@@ -47,14 +37,18 @@ describe('MapWrapper', () => {
   it('renders markers for visiting locations', () => {
     render(<MapWrapper style={{ height: '100vh', width: '100%' }} />);
     const markers = screen.getAllByTestId('marker');
-    expect(markers).toHaveLength(2);
+    expect(markers).toHaveLength(3);
     expect(markers[0]).toHaveAttribute('data-title', 'Location 1');
-    expect(markers[1]).toHaveAttribute('data-title', 'Location 3');
+    expect(markers[1]).toHaveAttribute('data-title', 'Location 2');
+    expect(markers[2]).toHaveAttribute('data-title', 'Location 3');
   });
 
-  it('does not render markers for non-visiting locations', () => {
+  it('renders markers with correct location names', () => {
     render(<MapWrapper style={{ height: '100vh', width: '100%' }} />);
-    expect(screen.queryByTestId('Location 2')).toBeNull();
+    const markers = screen.getAllByTestId('marker');
+    const visitingMarkers = markers.filter(marker => mockLocations.find(location => location.name === marker.getAttribute('data-title') && location.visiting));
+    expect(visitingMarkers).toHaveLength(2);
+    expect(visitingMarkers[0]).toHaveAttribute('data-title', 'Location 1');
+    expect(visitingMarkers[1]).toHaveAttribute('data-title', 'Location 3');
   });
-
 });

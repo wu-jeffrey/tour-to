@@ -8,7 +8,7 @@ import MainMenu from './components/MainMenu.js'
 function App() {
   return (
     <TourContextProvider>
-      <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+      <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} version="beta">
         <div className='relative'>
           <Map
             // TODO: Remove coupling here with the w-16 == 4rem which is used to get the width of the map so that the sidebar doesn't obscure it
