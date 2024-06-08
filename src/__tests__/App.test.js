@@ -2,10 +2,16 @@ import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import App from '../App';
 import { useTourContext } from '../context/TourContext';
+import { useModalContext } from '../context/ModalContext';
 
 jest.mock('../context/TourContext.js', () => ({
   TourContextProvider: ({ children }) => <div>{children}</div>,
   useTourContext: jest.fn(),
+}));
+
+jest.mock('../context/ModalContext.js', () => ({
+  ModalContextProvider: ({ children }) => <div>{children}</div>,
+  useModalContext: jest.fn(),
 }));
 
 jest.mock('../components/Map.js', () => ({ style }) => (
@@ -35,6 +41,12 @@ describe('App', () => {
     useTourContext.mockReturnValue({
       locations: mockLocations,
     });
+
+    useModalContext.mockReturnValue({
+      isOpen: false,
+      closeModal: jest.fn(),
+      modalContent: null,
+    });
   });
 
   it('renders map with locations', () => {
@@ -57,12 +69,6 @@ describe('App', () => {
       const marker = within(map).getByText(name);
       expect(marker).toBeInTheDocument();
     });
-  });
-
-  it('renders TourContextProvider', () => {
-    render(<App />);
-    const locations = useTourContext().locations;
-    expect(locations).toEqual(mockLocations);
   });
 
   it('renders Menu component', () => {
