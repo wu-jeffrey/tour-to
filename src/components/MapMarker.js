@@ -38,7 +38,7 @@ const MapMarker = ({ location }) => {
           pixelOffset={[0, -90]}
           headerContent={location.name}
         >
-          <div>Address Placeholder</div>
+          <div>{location.address}</div>
           <button
             className='mt-4 bg-blue-500 text-white px-4 py-2 rounded-md'
             onClick={openModal}

@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getPlaceLocation } from '../api/googlePlacesApi';
 
-const _locations = [
-  { id: "ChIJAxd7Nio1K4gRcH7M1JG4vdA", name: "245 Queens Quay W", lat: 43.63774957110286, lng: -79.38722802360513, visiting: true, required: true },
-  { id: "ChIJmzrzi9Y0K4gRgXUc3sTY7RU", name: "CN Tower", lat: 43.6426, lng: -79.3871, visiting: true },
-  { id: "ChIJBxZ2UMw0K4gR1LmKMBvveP0", name: "Nathan Phillips Square", lat: 43.6527069, lng: -79.3859886, visiting: true },
-  { id: "ChIJ68ICPcI0K4gRDOBbkTJRLUc", name: "Kensington Market", lat: 43.6548336, lng: -79.4131749, visiting: true },
-  { id: "ChIJvUYHUcs0K4gRN8i7jHsUiYs", name: "Eaton Centre", lat: 43.6544382, lng: -79.3832743, visiting: true, required: true },
+const places = [
+  { id: "ChIJAxd7Nio1K4gRcH7M1JG4vdA", visiting: true, required: true }, // 245 Queens Quay W
+  { id: "ChIJmzrzi9Y0K4gRgXUc3sTY7RU", visiting: true }, // CN Tower
+  { id: "ChIJBxZ2UMw0K4gR1LmKMBvveP0", visiting: true }, // Nathan Phillips Square
+  { id: "ChIJ68ICPcI0K4gRDOBbkTJRLUc", visiting: true }, // Kensington Market
+  { id: "ChIJvUYHUcs0K4gRN8i7jHsUiYs", visiting: true, required: true }, // Eaton Centre
 ];
 
 const TourContext = createContext();
@@ -15,8 +16,28 @@ export const TourContextProvider = ({ children }) => {
   const [currentLocationId, setCurrentLocationId] = useState(null);
 
   useEffect(() => {
-    // Mock initial API call to fetch landmarks from server
-    setLocations(_locations);
+    const fetchLocations = async () => {
+      const promises = places.map(async (location) => {
+        try {
+          const place = await getPlaceLocation(location.id);
+          return {
+            ...location,
+            lat: place?.location.latitude,
+            lng: place?.location.longitude,
+            name: place?.displayName.text,
+            address: place?.formattedAddress,
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      });
+
+      Promise.all(promises).then(_locations => {
+        setLocations(_locations)
+      });
+    };
+
+    fetchLocations();
   }, [setLocations]);
 
   const value = {

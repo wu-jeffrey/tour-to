@@ -20,7 +20,7 @@ const fetchPlacesData = async (placeId, fieldMask) => {
 };
 
 export const getPlaceLocation = async (placeId) => {
-  const fieldMask = 'location';
+  const fieldMask = 'location,displayName,formattedAddress';
   return await fetchPlacesData(placeId, fieldMask);
 };
 

@@ -30,7 +30,7 @@ describe('Google Places API functions', () => {
 
   describe('fetchPlacesData', () => {
     it('fetches place data successfully', async () => {
-      const fieldMask = 'location';
+      const fieldMask = 'location,displayName,formattedAddress';
       const data = { location: { lat: 43.6532, lng: -79.3832 } };
 
       fetch.mockImplementationOnce(() => mockResponse(200, data));
@@ -74,7 +74,7 @@ describe('Google Places API functions', () => {
     });
 
     it('handles fetch error', async () => {
-      const fieldMask = 'location';
+      const fieldMask = 'location,displayName,formattedAddress';
 
       fetch.mockImplementationOnce(() => mockResponse(500, { message: 'Server error' }));
 
@@ -117,7 +117,7 @@ describe('Google Places API functions', () => {
 
   describe('getPlaceLocation', () => {
     it('fetches place location successfully', async () => {
-      const fieldMask = 'location';
+      const fieldMask = 'location,displayName,formattedAddress';
       const data = { location: { lat: 43.6532, lng: -79.3832 } };
 
       fetch.mockImplementationOnce(() => mockResponse(200, data));
@@ -140,7 +140,7 @@ describe('Google Places API functions', () => {
     });
 
     it('handles fetch error', async () => {
-      const fieldMask = 'location';
+      const fieldMask = 'location,displayName,formattedAddress';
 
       fetch.mockImplementationOnce(() => mockResponse(500, { message: 'Server error' }));
 

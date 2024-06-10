@@ -1,6 +1,7 @@
 import React, { act } from 'react';
 import { render, screen } from '@testing-library/react';
 import { TourContextProvider, useTourContext } from '../../context/TourContext';
+import { getPlaceLocation } from '../../api/googlePlacesApi';
 
 const TestComponent = () => {
   const {
@@ -27,21 +28,6 @@ const TestComponent = () => {
 };
 
 describe('TourContext', () => {
-  it('initializes with the correct locations', () => {
-    render(
-      <TourContextProvider>
-        <TestComponent />
-      </TourContextProvider>
-    );
-
-    expect(screen.queryByTestId('current-location-id')).not.toBeInTheDocument();
-    expect(screen.getByText('245 Queens Quay W')).toBeInTheDocument();
-    expect(screen.getByText('CN Tower')).toBeInTheDocument();
-    expect(screen.getByText('Nathan Phillips Square')).toBeInTheDocument();
-    expect(screen.getByText('Kensington Market')).toBeInTheDocument();
-    expect(screen.getByText('Eaton Centre')).toBeInTheDocument();
-  });
-
   it('allows updating the locations', () => {
     render(
       <TourContextProvider>
