@@ -1,6 +1,7 @@
 import React from 'react';
-import { Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { Map } from '@vis.gl/react-google-maps';
 
+import MapMarker from './MapMarker';
 import { useTourContext } from '../context/TourContext';
 
 const MapWrapper = ({
@@ -21,15 +22,11 @@ const MapWrapper = ({
       defaultCenter={defaultCenter}
       defaultTilt={defaultTilt}
       mapId={mapId}
+      disableDefaultUI
       {...props}
     >
-      {locations.filter(l => l.visiting).map((location, index) => (
-        <AdvancedMarker
-          key={index}
-          position={{ lat: location.lat, lng: location.lng }}
-          title={location.name}
-          onClick={() => console.log(`Clicked on ${location.name}`)}
-        />
+      {locations.map((location, index) => (
+        <MapMarker location={location} key={index} />
       ))}
     </Map>
   );
