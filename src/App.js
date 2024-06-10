@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 
+import PlaceDetails from './components/PlaceDetails.js';
 import Map from './components/Map.js'
 import MainMenu from './components/MainMenu.js'
 import Modal from './components/ui/Modal.js'
@@ -8,12 +9,12 @@ import Modal from './components/ui/Modal.js'
 import { useModalContext } from './context/ModalContext.js';
 
 function App() {
-  const { isOpen, closeModal, modalContent } = useModalContext();
+  const { isOpen, closeModal } = useModalContext();
 
   return (
     <div className='relative'>
       <Modal isOpen={isOpen} onClose={closeModal}>
-        {modalContent}
+        <PlaceDetails />
       </Modal>
       <Map
         // TODO: Remove coupling here with the w-16 == 4rem which is used to get the width of the map so that the sidebar doesn't obscure it

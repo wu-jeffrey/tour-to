@@ -1,10 +1,12 @@
 import React from 'react';
 import { AdvancedMarker, InfoWindow, useAdvancedMarkerRef } from '@vis.gl/react-google-maps';
 import { useTourContext } from '../context/TourContext';
+import { useModalContext } from '../context/ModalContext';
 
 const MapMarker = ({ location }) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
   const { currentLocationId, setCurrentLocationId } = useTourContext();
+  const { openModal } = useModalContext();
 
   if (!location.id || !location.name || !location.lat || !location.lng) {
     return;
@@ -36,7 +38,11 @@ const MapMarker = ({ location }) => {
           pixelOffset={[0, -90]}
           headerContent={location.name}
         >
-          <div>beeboop</div>
+          <div>Address Placeholder</div>
+          <button
+            className='mt-4 bg-blue-500 text-white px-4 py-2 rounded-md'
+            onClick={openModal}
+          >Details</button>
         </InfoWindow>
       )}
       <AdvancedMarker

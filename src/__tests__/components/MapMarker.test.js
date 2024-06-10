@@ -1,9 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useTourContext } from '../../context/TourContext';
+import { useModalContext } from '../../context/ModalContext';
 import MapMarker from '../../components/MapMarker';
 
 jest.mock('../../context/TourContext');
+jest.mock('../../context/ModalContext.js');
 jest.mock('@vis.gl/react-google-maps', () => {
   // Need Re-declare variables (i.e. React) inside the mock scope otherwise we'll get a ReferenceError
   const React = require('react');
@@ -39,6 +41,11 @@ const mockContext = {
 describe('MapMarker', () => {
   beforeEach(() => {
     useTourContext.mockReturnValue(mockContext);
+    useModalContext.mockReturnValue({
+      isOpen: false,
+      closeModal: jest.fn(),
+      modalContent: null,
+    });
   });
 
   it('renders without crashing', () => {
