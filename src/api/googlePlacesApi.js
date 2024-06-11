@@ -25,6 +25,6 @@ export const getPlaceLocation = async (placeId) => {
 };
 
 export const getPlaceDetails = async (placeId) => {
-  const fieldMask = 'displayName,formattedAddress,editorialSummary,regularOpeningHours,photos,priceLevel,rating,reviews,primaryType';
+  const fieldMask = 'id,displayName,formattedAddress,editorialSummary,regularOpeningHours,photos,priceLevel,rating,reviews,primaryType';
   return await fetchPlacesData(placeId, fieldMask);
 };

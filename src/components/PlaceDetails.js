@@ -44,7 +44,7 @@ const PlaceDetails = () => {
           {place.photos?.map((photo, index) => (
             <img
               key={index}
-              src={`https://places.googleapis.com/v1/places/${currentLocationId}/photos/${photo.name.split('/')[3]}/media?maxWidthPx=1600&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}
+              src={`https://places.googleapis.com/v1/places/${place.id}/photos/${photo.name.split('/')[3]}/media?maxWidthPx=1600&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}
               alt="Place"
               height={400}
               width={400}

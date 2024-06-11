@@ -162,7 +162,7 @@ describe('Google Places API functions', () => {
 
   describe('getPlaceDetails', () => {
     it('fetches place details successfully', async () => {
-      const fieldMask = 'displayName,formattedAddress,editorialSummary,regularOpeningHours,photos,priceLevel,rating,reviews,primaryType';
+      const fieldMask = 'id,displayName,formattedAddress,editorialSummary,regularOpeningHours,photos,priceLevel,rating,reviews,primaryType';
       const data = {
         displayName: { text: 'Test Place' },
         formattedAddress: '123 Test St, Test City, TC',
@@ -195,7 +195,7 @@ describe('Google Places API functions', () => {
     });
 
     it('handles fetch error', async () => {
-      const fieldMask = 'displayName,formattedAddress,editorialSummary,regularOpeningHours,photos,priceLevel,rating,reviews,primaryType';
+      const fieldMask = 'id,displayName,formattedAddress,editorialSummary,regularOpeningHours,photos,priceLevel,rating,reviews,primaryType';
 
       fetch.mockImplementationOnce(() => mockResponse(500, { message: 'Server error' }));
 
