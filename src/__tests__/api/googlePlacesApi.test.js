@@ -26,6 +26,7 @@ describe('Google Places API functions', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    localStorage.clear(); // Clear localStorage after each test
   });
 
   describe('fetchPlacesData', () => {
@@ -40,7 +41,7 @@ describe('Google Places API functions', () => {
         const headers = {
           'Content-Type': 'application/json',
           'X-Goog-Api-Key': API_KEY,
-          'X-Goog-FieldMask': fieldMask
+          'X-Goog-FieldMask': fieldMask,
         };
 
         try {
@@ -83,7 +84,7 @@ describe('Google Places API functions', () => {
         const headers = {
           'Content-Type': 'application/json',
           'X-Goog-Api-Key': API_KEY,
-          'X-Goog-FieldMask': fieldMask
+          'X-Goog-FieldMask': fieldMask,
         };
 
         try {
@@ -116,7 +117,7 @@ describe('Google Places API functions', () => {
   });
 
   describe('getPlaceLocation', () => {
-    it('fetches place location successfully', async () => {
+    it('fetches place location successfully and caches the result', async () => {
       const fieldMask = 'location,displayName,formattedAddress';
       const data = { location: { lat: 43.6532, lng: -79.3832 } };
 
@@ -136,6 +137,23 @@ describe('Google Places API functions', () => {
         }
       );
 
+      expect(result).toEqual(data);
+
+      // Check that the result is cached
+      const cachedData = JSON.parse(localStorage.getItem(`placeLocation-${placeId}`));
+      expect(cachedData).toBeDefined();
+      expect(cachedData.data).toEqual(data);
+    });
+
+    it('uses cached place location data', async () => {
+      const fieldMask = 'location,displayName,formattedAddress';
+      const data = { location: { lat: 43.6532, lng: -79.3832 } };
+
+      localStorage.setItem(`placeLocation-${placeId}`, JSON.stringify({ data, timestamp: new Date().getTime() }));
+
+      const result = await getPlaceLocation(placeId);
+
+      expect(fetch).not.toHaveBeenCalled();
       expect(result).toEqual(data);
     });
 
@@ -161,7 +179,7 @@ describe('Google Places API functions', () => {
   });
 
   describe('getPlaceDetails', () => {
-    it('fetches place details successfully', async () => {
+    it('fetches place details successfully and caches the result', async () => {
       const fieldMask = 'id,displayName,formattedAddress,editorialSummary,regularOpeningHours,photos,priceLevel,rating,reviews,primaryType';
       const data = {
         displayName: { text: 'Test Place' },
@@ -191,6 +209,32 @@ describe('Google Places API functions', () => {
         }
       );
 
+      expect(result).toEqual(data);
+
+      // Check that the result is cached
+      const cachedData = JSON.parse(localStorage.getItem(`placeDetails-${placeId}`));
+      expect(cachedData).toBeDefined();
+      expect(cachedData.data).toEqual(data);
+    });
+
+    it('uses cached place details data', async () => {
+      const data = {
+        displayName: { text: 'Test Place' },
+        formattedAddress: '123 Test St, Test City, TC',
+        editorialSummary: { text: 'A wonderful place to visit' },
+        regularOpeningHours: { openNow: true },
+        photos: [{ name: 'photos/test_photo_1' }],
+        priceLevel: 2,
+        rating: 4.5,
+        reviews: [{ text: { text: 'Great place!' } }],
+        primaryType: 'restaurant',
+      };
+
+      localStorage.setItem(`placeDetails-${placeId}`, JSON.stringify({ data, timestamp: new Date().getTime() }));
+
+      const result = await getPlaceDetails(placeId);
+
+      expect(fetch).not.toHaveBeenCalled();
       expect(result).toEqual(data);
     });
 
