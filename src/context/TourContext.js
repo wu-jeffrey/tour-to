@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getPlaceLocation } from '../api/googlePlacesApi';
+import { getDirections } from '../api/googleRoutesApi';
+
 
 const places = [
   { id: "ChIJAxd7Nio1K4gRcH7M1JG4vdA", visiting: true, required: true }, // 245 Queens Quay W
@@ -39,6 +41,38 @@ export const TourContextProvider = ({ children }) => {
 
     fetchLocations();
   }, [setLocations]);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (locations.length === 0) {
+        return;
+      }
+      const originPlaceId = locations[0]?.id;
+      const destinationPlaceId = locations[locations.length - 1]?.id;
+      const waypointPlaceIds = locations.slice(1, locations.length - 1).filter(l => l.visiting).map(l => l.id);
+
+      const response = await getDirections(originPlaceId, destinationPlaceId, waypointPlaceIds);
+      const data = await response.json();
+      console.log(data);
+    }
+    fetchData();
+
+    // const worker = new Worker(new URL('../fakeWebsocketWorker.js', import.meta.url));
+
+    // worker.postMessage({
+    //   originPlaceId: locations[0]?.id,
+    //   destinationPlaceId: locations[locations.length - 1]?.id,
+    //   waypointPlaceIds: locations.slice(1, locations.length - 1).filter(l => l.visiting).map(l => l.id),
+    // });
+
+    // worker.onmessage = function (e) {
+    //   console.log('Message received from worker:', e.data);
+    // };
+
+    // return () => {
+    //   worker.postMessage('terminate');
+    // };
+  }, [locations]);
 
   const value = {
     locations,
