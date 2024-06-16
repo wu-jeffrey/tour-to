@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Map, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 
 import MapMarker from './MapMarker';
@@ -15,22 +15,29 @@ const MapWrapper = ({
   const { locations, directions } = useTourContext();
   const map = useMap();
   const routesLibrary = useMapsLibrary('routes');
-  const [directionsRenderer, setDirectionsRenderer] = useState(null);
+  const directionsRendererRef = useRef(null);
 
   useEffect(() => {
     if (!routesLibrary || !map) return;
-    setDirectionsRenderer(new routesLibrary.DirectionsRenderer({
+
+    directionsRendererRef.current = new routesLibrary.DirectionsRenderer({
       map,
       suppressMarkers: true,
       suppressInfoWindows: true,
-    }));
+    });
+
+    return () => {
+      if (directionsRendererRef.current) {
+        directionsRendererRef.current.setMap(null);
+      }
+    };
   }, [routesLibrary, map]);
 
   useEffect(() => {
-    if (!directionsRenderer || !directions) return;
-
-    directionsRenderer.setDirections(directions);
-  }, [directionsRenderer, directions])
+    if (directionsRendererRef.current && directions) {
+      directionsRendererRef.current.setDirections(directions);
+    }
+  }, [directions]);
 
   return (
     <Map

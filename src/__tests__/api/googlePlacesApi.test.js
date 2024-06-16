@@ -17,10 +17,14 @@ describe('Google Places API functions', () => {
   const originalEnv = process.env;
 
   beforeAll(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => { });
+    jest.spyOn(console, 'error').mockImplementation(() => { });
     process.env.REACT_APP_GOOGLE_MAPS_API_KEY = API_KEY;
   });
 
   afterAll(() => {
+    console.log.mockRestore();
+    console.error.mockRestore();
     process.env = originalEnv;
   });
 
