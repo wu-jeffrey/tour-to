@@ -15,9 +15,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "quickstart": "npm install && cd proxy-server && npm install && cd .. && npm run start",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd proxy-server && node index.js",
+    "client": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "npm run build && firebase deploy",
+    "deploy": "npm run deploy:client && npm run deploy:server",
+    "deploy:client": "firebase deploy",
+    "deploy:server": "cd proxy-server && gcloud run deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -41,6 +46,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
+    "concurrently": "^8.2.2",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3"
   }
