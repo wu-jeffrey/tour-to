@@ -17,7 +17,8 @@ const fetchDirections = async (originPlaceId, destinationPlaceId, waypointPlaceI
   }
   url.searchParams.append('departure_time', 'now');
   url.searchParams.append('traffic_model', 'best_guess');
-  url.searchParams.append('mode', 'walking')
+  url.searchParams.append('mode', 'walking');
+  url.searchParams.append('alternatives', 'false');
   url.searchParams.append('key', process.env.GOOGLE_MAPS_API_KEY);
 
   try {

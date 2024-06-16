@@ -27,7 +27,7 @@ const MapWrapper = ({
   }, [routesLibrary, map]);
 
   useEffect(() => {
-    if (!directionsRenderer) return;
+    if (!directionsRenderer || !directions) return;
 
     directionsRenderer.setDirections(directions);
   }, [directionsRenderer, directions])

@@ -54,7 +54,7 @@ const MapMarker = ({ location }) => {
       >
         <div
           className={`
-            ${currentLocationId === location.id && "spin3d"}
+            ${currentLocationId === location.id && "animate-spin3d"}
             ${location.visiting ? "" : "hidden"}
           `}
           style={{
