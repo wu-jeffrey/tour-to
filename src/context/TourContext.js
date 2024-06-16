@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { getPlaceLocation } from '../api/googlePlacesApi';
+import { initializeDirectionsWS } from '../api/directionsWSApi';
 
 const places = [
   { id: "ChIJAxd7Nio1K4gRcH7M1JG4vdA", visiting: true, required: true }, // 245 Queens Quay W
@@ -14,6 +15,17 @@ const TourContext = createContext();
 export const TourContextProvider = ({ children }) => {
   const [locations, setLocations] = useState([]);
   const [currentLocationId, setCurrentLocationId] = useState(null);
+  const [directions, setDirections] = useState(null);
+  const [travelTimeSeconds, setTravelTimeSeconds] = useState(null);
+  const wsRef = useRef(null);
+  const isWebSocketInitialized = useRef(false);
+
+  const getWSPayload = (locations) => {
+    const originPlaceId = locations[0]?.id;
+    const destinationPlaceId = locations[locations.length - 1]?.id;
+    const waypointPlaceIds = locations.slice(1, locations.length - 1).filter(l => l.visiting).map(l => l.id);
+    return JSON.stringify({ originPlaceId, destinationPlaceId, waypointPlaceIds })
+  }
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -32,19 +44,50 @@ export const TourContextProvider = ({ children }) => {
         }
       });
 
-      Promise.all(promises).then(_locations => {
-        setLocations(_locations)
-      });
+      const _locations = await Promise.all(promises);
+      setLocations(_locations.filter(Boolean));
+
+      if (!isWebSocketInitialized.current) {
+        wsRef.current = initializeDirectionsWS({
+          onOpen: () => {
+            wsRef.current.send(getWSPayload(_locations))
+          },
+          onMessage: (data) => {
+            const travelTimeSeconds = data.routes[0].legs.reduce(
+              (acc, leg) => acc += Number(leg.duration.value), 0
+            );
+            setTravelTimeSeconds(travelTimeSeconds);
+            setDirections(data);
+          },
+        });
+        isWebSocketInitialized.current = true;
+      }
     };
 
     fetchLocations();
-  }, [setLocations]);
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (locations.length === 0) return;
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+    wsRef.current.send(getWSPayload(locations));
+  }, [locations]);
 
   const value = {
     locations,
     setLocations,
     currentLocationId,
     setCurrentLocationId,
+    directions,
+    setDirections,
+    travelTimeSeconds,
+    setTravelTimeSeconds,
   };
 
   return (

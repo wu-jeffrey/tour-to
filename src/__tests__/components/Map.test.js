@@ -8,6 +8,18 @@ jest.mock('@vis.gl/react-google-maps', () => ({
   Map: ({ children, defaultZoom, defaultCenter, defaultTilt, mapId, disableDefaultUI, ...props }) => (
     <div {...props}>{children}</div>
   ),
+  useMap: () => ({}),
+  useMapsLibrary: (library) => {
+    if (library === 'routes') {
+      return {
+        DirectionsRenderer: jest.fn().mockImplementation(() => ({
+          setMap: jest.fn(),
+          setDirections: jest.fn(),
+        })),
+      };
+    }
+    return null;
+  },
 }));
 
 jest.mock('../../components/MapMarker', () => ({ location }) => (
@@ -22,10 +34,19 @@ const mockLocations = [
   { name: 'Location 3', visiting: true, lat: 43.6500, lng: -79.3870 },
 ];
 
+const mockDirections = {
+  routes: [{
+    legs: [
+      { start_address: 'Location 1', end_address: 'Location 3' }
+    ]
+  }]
+};
+
 describe('MapWrapper', () => {
   beforeEach(() => {
     useTourContext.mockReturnValue({
       locations: mockLocations,
+      directions: mockDirections,
     });
   });
 
@@ -34,7 +55,7 @@ describe('MapWrapper', () => {
     expect(screen.getByTestId('map')).toBeInTheDocument();
   });
 
-  it('renders markers for visiting locations', () => {
+  it('renders markers for all locations', () => {
     render(<MapWrapper style={{ height: '100vh', width: '100%' }} />);
     const markers = screen.getAllByTestId('marker');
     expect(markers).toHaveLength(3);

@@ -5,6 +5,7 @@ import PlaceDetails from './components/PlaceDetails.js';
 import Map from './components/Map.js'
 import MainMenu from './components/MainMenu.js'
 import Modal from './components/ui/Modal.js'
+import TravelTime from './components/TravelTime.js';
 
 import { useModalContext } from './context/ModalContext.js';
 
@@ -13,6 +14,9 @@ function App() {
 
   return (
     <div className='relative'>
+      <div className="absolute right-0 bottom-0 z-10">
+        <TravelTime />
+      </div>
       <Modal isOpen={isOpen} onClose={closeModal}>
         <PlaceDetails />
       </Modal>
