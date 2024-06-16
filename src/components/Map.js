@@ -1,5 +1,5 @@
-import React from 'react';
-import { Map } from '@vis.gl/react-google-maps';
+import React, { useState, useEffect } from 'react';
+import { Map, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 
 import MapMarker from './MapMarker';
 import { useTourContext } from '../context/TourContext';
@@ -12,7 +12,25 @@ const MapWrapper = ({
   defaultTilt = 30,
   ...props
 }) => {
-  const { locations } = useTourContext();
+  const { locations, directions } = useTourContext();
+  const map = useMap();
+  const routesLibrary = useMapsLibrary('routes');
+  const [directionsRenderer, setDirectionsRenderer] = useState(null);
+
+  useEffect(() => {
+    if (!routesLibrary || !map) return;
+    setDirectionsRenderer(new routesLibrary.DirectionsRenderer({
+      map,
+      suppressMarkers: true,
+      suppressInfoWindows: true,
+    }));
+  }, [routesLibrary, map]);
+
+  useEffect(() => {
+    if (!directionsRenderer) return;
+
+    directionsRenderer.setDirections(directions);
+  }, [directionsRenderer, directions])
 
   return (
     <Map

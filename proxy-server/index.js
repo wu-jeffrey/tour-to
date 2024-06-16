@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const WebSocket = require('ws');
+const googleMaps = require('@google/maps')
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -16,6 +17,7 @@ const fetchDirections = async (originPlaceId, destinationPlaceId, waypointPlaceI
   }
   url.searchParams.append('departure_time', 'now');
   url.searchParams.append('traffic_model', 'best_guess');
+  url.searchParams.append('mode', 'walking')
   url.searchParams.append('key', process.env.GOOGLE_MAPS_API_KEY);
 
   try {
@@ -24,12 +26,32 @@ const fetchDirections = async (originPlaceId, destinationPlaceId, waypointPlaceI
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    return data;
+    return shimResponseWithGoogleSDKFields(data);
   } catch (error) {
     console.error('Error fetching data:', error);
     throw error;
   }
 };
+
+const shimResponseWithGoogleSDKFields = (response) => {
+  response.routes.forEach(route => {
+    route.bounds = {
+      south: route.bounds.southwest.lat,
+      west: route.bounds.southwest.lng,
+      north: route.bounds.northeast.lat,
+      east: route.bounds.northeast.lng
+    };
+    route.legs.forEach(leg => {
+      leg.steps.forEach(step => {
+        step.path = googleMaps.util.decodePath(step.polyline.points);
+      });
+    });
+  });
+
+  response.request = { travelMode: "walking" }
+
+  return response;
+}
 
 const respondToMessage = async (ws, originPlaceId, destinationPlaceId, waypointPlaceIds) => {
   const data = await fetchDirections(originPlaceId, destinationPlaceId, waypointPlaceIds);

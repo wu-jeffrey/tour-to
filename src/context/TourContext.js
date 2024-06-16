@@ -15,6 +15,7 @@ const TourContext = createContext();
 export const TourContextProvider = ({ children }) => {
   const [locations, setLocations] = useState([]);
   const [currentLocationId, setCurrentLocationId] = useState(null);
+  const [directions, setDirections] = useState(null);
   const wsRef = useRef(null);
   const isWebSocketInitialized = useRef(false);
 
@@ -49,7 +50,8 @@ export const TourContextProvider = ({ children }) => {
         wsRef.current = initializeDirectionsWS({
           onOpen: () => {
             wsRef.current.send(getWSPayload(_locations))
-          }
+          },
+          onMessage: setDirections
         });
         isWebSocketInitialized.current = true;
       }
@@ -75,6 +77,8 @@ export const TourContextProvider = ({ children }) => {
     setLocations,
     currentLocationId,
     setCurrentLocationId,
+    directions,
+    setDirections,
   };
 
   return (
