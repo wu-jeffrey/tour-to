@@ -3,7 +3,7 @@
 This is a coding challenge for a frontend developer position at [Argo](https://www.rideargo.com/). The challenge is to create a simple web application that allows users to plan a tour to some popular Toronto landmarks. Read the full project spec [here](https://github.com/wu-jeffrey/tour-to/wiki/0-Project-Specifications).
 
 ## Quickstart 🚀
-I added some quick commands to get you up and running!
+I added some quick commands to get you up and running right after cloning the repo!
 Ask me for the API Key and MapId (or use your own) and paste them when prompted by the setup script.
 ```bash
 sh setup.sh && npm run quickstart
