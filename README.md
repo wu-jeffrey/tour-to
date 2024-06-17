@@ -9,6 +9,9 @@ Ask me for the API Key and MapId (or use your own) and paste them when prompted 
 sh setup.sh && npm run quickstart
 ```
 
+## Documentation 📝
+See here: https://github.com/wu-jeffrey/tour-to/wiki
+
 ## All available commands 📜
 ### `npm run quickstart`
 installs all npm dependencies and starts the server and client concurrently
