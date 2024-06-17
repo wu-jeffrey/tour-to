@@ -4,6 +4,7 @@ This is a coding challenge for a frontend developer position at [Argo](https://w
 
 ## Quickstart 🚀
 I added some quick commands to get you up and running!
+Ask me for the API Key and MapId (or use your own) and paste them when prompted by the setup script.
 ```bash
 sh setup.sh && npm run quickstart
 ```
